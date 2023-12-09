@@ -1,25 +1,50 @@
-import logo from './logo.svg';
-import './App.css';
+import Students from "./components/students";
+import Form from "./components/One/Form";
+import Background from "./components/One/Background";
+import { useState } from "react";
 
-function App() {
+function App(){
+
+  const [students,setStudents ] = useState([])
+
+
+
+const formCall =(param)=>{
+  console.log(param);
+  setStudents([...students,param])
+}
+
+let body = <p>Post something.</p>;
+
+if(!students.length < 1){
+  body = students.map((student)=>{
+    return (
+      <Students key={student.name} name={student.name} age={student.age} />
+    )
+  })
+}
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+    <h2>Home Page</h2>
+
+   <div >
+  {body}
+   </div>
+   
+
+
+    <Background>
+      <Form call={formCall} />
+    </Background>
+
+
+  
+    
+
     </div>
-  );
+  )
 }
 
 export default App;
