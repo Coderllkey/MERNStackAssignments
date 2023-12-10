@@ -1,28 +1,34 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 
 const Form = (props) => {
-    const [name,setName] = useState("");
-    const [address,setAddress] = useState("");
-    const [email,setEmail] = useState("");
+ 
+
+    const nameref = useRef()
+    const addressref = useRef()
+    const emailref = useRef()
+
+    
 
 const call =(event)=>{
     event.preventDefault();
 
-    if(name.trim().length===0 || address.trim().length===0 || email.trim().length===0){
+    if(nameref.current.value.trim().length===0 || addressref.current.value.trim().length===0 || emailref.current.value.trim().length===0){
         alert('fill in valid information in the form')
         return;
     }
     else{
         let data = {
-            name,
-            address,
-            email
+            name:nameref.current.value,
+            address:addressref.current.value,
+            email:emailref.current.value
         }
         props.getuser(data)
         // console.log(name, address, email)
-        setName("");
-        setAddress("");
-        setEmail("");
+     
+        nameref.current.value=""
+        addressref.current.value=""
+        emailref.current.value=""
+
     }
 }
 
@@ -31,15 +37,15 @@ const call =(event)=>{
     <form className='form bg' onSubmit={call}>
         <div className='form-div'>
             <label className='form-label'>Name</label>
-            <input className='form-input' type='text' value={name} onChange={(e)=>{setName(e.target.value)}} />
+            <input className='form-input' type='text'  ref={nameref}  />
         </div>
         <div className='form-div'>
             <label className='form-label'>Address</label>
-            <input className='form-input' type='text' value={address} onChange={(e)=>{setAddress(e.target.value)}} />
+            <input className='form-input' type='text'  ref={addressref}  />
         </div>
         <div className='form-div'>
             <label className='form-label'>Email</label>
-            <input className='form-input' type='email' value={email} onChange={(e)=>{setEmail(e.target.value)}}/>
+            <input className='form-input' type='email' ref={emailref} />
         </div>
         <div className='form-container'>
         <button className='form-button' type='submit'>Go</button>
