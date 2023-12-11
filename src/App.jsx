@@ -1,41 +1,62 @@
-import React, { useReducer, useState } from 'react'
+import React, { useState } from 'react'
 
-const firstReducer = (state,action)=>{
-    switch (action.type){
-      case "minus":
-        return {...state,num:state.num-1};
-      case "plus":
-        return {...state,num:state.num+1};
-      case "text":
-        return {...state,key:action.payload};
-    }
-}
-
-const ACTION = {
-  PLUS : 'plus',
-  MINUS : 'minus',
-  TEXT : 'text'
-}
 const App = () => {
-  // const [key,setKey]=useState("");
-  // const [num,setNum]=useState(0);
+  const [info, setInfo] = useState(undefined);
+  const [id, setId] = useState("");
+  const [err, setErr] = useState(false);
 
-  const [state, dispatch] = useReducer(firstReducer, {num:0,key:""})
 
 
+
+  async function dataFetch(e) {
+    e.preventDefault();
+    if (id < 1) {
+      setErr(true);
+      return;
+    }
+    try {
+      const Response = await fetch(`https://jsonplaceholder.typicode.com/todos/${id}`);
+      const data = await Response.json();
+      setErr(false)
+      setInfo(data);
+      setId("");
+    }
+    catch (err) {
+      console.log(err)
+    }
+
+  }
   return (
-    <div>
+    <div style={{ textAlign: 'center' }}>
+      <h3 >Fetching Data from API</h3>
+      <form onSubmit={dataFetch}>
+        <input type='number' value={id} onChange={(e) => setId(e.target.value)} placeholder='Search ID (eg:1,2,3..)' />
+        <button type='submit' >Search</button>
+      </form>
+      {info && (
+        <div className='list' >
+          <table>
+            <thead>
+              <tr>
+                <th>UserID</th>
+                <td> {info.userId} </td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th>Title</th>
+                <td> {info.title}</td>
+              </tr>
+              <tr>
+                <th>Completed</th>
+                <td>{info.completed ? (<>Completed</>) : (<>In Progress</>)}</td>
+              </tr>
 
-      <input type="text" onChange={(event)=> dispatch({type:ACTION.TEXT,payload: event.target.value})} />
-      <h3>Your Key is..{state.key}</h3>
-
-      <div>
-        <button onClick={()=>dispatch({type:ACTION.MINUS})  }>-</button>
-        {state.num}
-        <button onClick={()=>dispatch({type:ACTION.PLUS}) }>+</button>
-
-      </div>
-
+            </tbody>
+          </table>
+        </div>
+      )}
+      {err && (<p>Please enter A Valid Id and try again.(Eg: 1,2,3,...)</p>)}
     </div>
   )
 }
